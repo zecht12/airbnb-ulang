@@ -7,7 +7,6 @@ import Footer from '../components/Footer'
 import ClientOnly from '@/components/ClientOnly'
 import RegisterModal from '@/components/modals/RegisterModal'
 import ToasterProvider from './providers/ToasterProvider'
-import LoginModal from '@/components/modals/LoginModal'
 
 export const metadata = {
   title: 'ZechTravel - Home',
@@ -30,7 +29,7 @@ export default function RootLayout({
           <ClientOnly>
             <ToasterProvider />
             <RegisterModal />
-            <LoginModal/>
+            <Login
             <Navbar/>
           </ClientOnly>
           {children}

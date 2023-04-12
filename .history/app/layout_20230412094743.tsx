@@ -30,7 +30,7 @@ export default function RootLayout({
           <ClientOnly>
             <ToasterProvider />
             <RegisterModal />
-            <LoginModal/>
+            <LoginModal
             <Navbar/>
           </ClientOnly>
           {children}
