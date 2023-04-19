@@ -1,5 +1,8 @@
 "use client";
 
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+
 export default function Footer () {
     return (
         <div className=' w-auto h-auto bg-slate-100'>
@@ -8,4 +11,13 @@ export default function Footer () {
             </div>
         </div>
     )
+    }
+
+}
+
+return (
+    <div>
+        {renderThemeChanger()}
+    </div>
+)
 }

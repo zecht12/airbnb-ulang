@@ -12,26 +12,34 @@ interface NavbarProps {
     }
 
 const Navbar: React.FC <NavbarProps> = ({currentUser}) => {
+    const [mounted, setMounted] = useState(false);
     const [nav, setNav] = useState(false)
     const [color, setColor] = useState(false)
-    
+
     const handleNav = () => {
         setNav(!nav)
     }
-    useEffect (() => {
-    const changeColor = () => {
-        if(window.scrollY >= 20) {
-            setColor(true);
-        } else {
-            setColor(false);
-        }
+
+useEffect (() => {
+const changeColor = () => {
+    if(window.scrollY >= 20) {
+        setColor(true);
+    } else {
+        setColor(false);
     }
-    
-    window.addEventListener('scroll', changeColor);
-    return() => {
-        window.removeEventListener('scroll', changeColor);
-    }
-    },[])
+}
+window.addEventListener('scroll', changeColor);
+return() => {
+    window.removeEventListener('scroll', changeColor);
+}
+},[])
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const renderThemeChanger = () => {
+    if(!mounted) return null;
 
     return (
         <div className="fixed bg-slate-100 w-full h-[100px] z-10 shadow-sm">
@@ -47,5 +55,14 @@ const Navbar: React.FC <NavbarProps> = ({currentUser}) => {
             <Categories/>
         </div>
     )
+    }
+
+}
+
+return (
+    <div>
+        {renderThemeChanger()}
+    </div>
+)
 }
 export default Navbar;

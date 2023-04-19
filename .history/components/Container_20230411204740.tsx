@@ -8,7 +8,7 @@ import React from 'react'
 
 const Container: React.FC<ContainerProps> = ({children}) => {
     return (
-    <div className="max-w-[2520px] mx-auto">
+    <div>
         {children}
     </div>
     )

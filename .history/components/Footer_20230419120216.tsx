@@ -8,4 +8,13 @@ export default function Footer () {
             </div>
         </div>
     )
+    }
+
+}
+
+return (
+    <div>
+        {renderThemeChanger()}
+    </div>
+)
 }
