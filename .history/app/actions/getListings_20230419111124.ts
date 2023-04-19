@@ -1,4 +1,6 @@
-import prisma from "@/app/libs/prismadb";
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export interface IListingsParams {
     userId?: string;
@@ -11,15 +13,24 @@ export interface IListingsParams {
     category?: string;
 }
 
-export default async function getListings(
-    params: IListingsParams
-    ) {
+export interface IListing {
+    id: number;
+    userId: string;
+    guestCount: number;
+    roomCount: number;
+    bathroomCount: number;
+    locationValue: string;
+    category: string;
+    createdAt: string;
+}
+
+export default async function getListings(params: IListingsParams): Promise<Array<IListing>> {
     try {
         const {
         userId,
-        roomCount, 
-        guestCount, 
-        bathroomCount, 
+        roomCount,
+        guestCount,
+        bathroomCount,
         locationValue,
         startDate,
         endDate,
@@ -38,20 +49,20 @@ export default async function getListings(
 
         if (roomCount) {
         query.roomCount = {
-            gte: +roomCount
-        }
+            gte: +roomCount,
+        };
         }
 
         if (guestCount) {
         query.guestCount = {
-            gte: +guestCount
-        }
+            gte: +guestCount,
+        };
         }
 
         if (bathroomCount) {
         query.bathroomCount = {
-            gte: +bathroomCount
-        }
+            gte: +bathroomCount,
+        };
         }
 
         if (locationValue) {
@@ -65,31 +76,31 @@ export default async function getListings(
                 OR: [
                 {
                     endDate: { gte: startDate },
-                    startDate: { lte: startDate }
+                    startDate: { lte: startDate },
                 },
                 {
                     startDate: { lte: endDate },
-                    endDate: { gte: endDate }
-                }
-                ]
-            }
-            }
-        }
+                    endDate: { gte: endDate },
+                },
+                ],
+            },
+            },
+        };
         }
 
         const listings = await prisma.listing.findMany({
         where: query,
         orderBy: {
-            createdAt: 'desc'
-        }
+            createdAt: 'desc',
+        },
         });
 
         const safeListings = listings.map((listing) => ({
-        ...listing,
-        createdAt: listing.createdAt.toISOString(),
-        }));
-
-        return safeListings;
+            ...listing,
+            createdAt: listing.createdAt.toISOString(),
+            }));
+            
+        return safeListings
     } catch (error: any) {
         throw new Error(error);
     }

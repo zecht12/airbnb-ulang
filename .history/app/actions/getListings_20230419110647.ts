@@ -93,4 +93,4 @@ export default async function getListings(
     } catch (error: any) {
         throw new Error(error);
     }
-}
+    }
