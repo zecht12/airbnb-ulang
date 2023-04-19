@@ -11,6 +11,7 @@ export interface IListingsParams {
     category?: string;
 }
 
+
 export default async function getListings(params: IListingsParams) {
     try {
         const {
@@ -24,16 +25,10 @@ export default async function getListings(params: IListingsParams) {
         category,
         } = params;
 
-        let query: any = {};
+        const query: any = {};
 
         if (userId) {
-        query.userId = userId;
-        } else if (typeof window !== 'undefined') {
-        const searchParams = new URLSearchParams(window.location.search);
-        const userIdParam = searchParams.get('userId');
-        if (userIdParam) {
-            query.userId = userIdParam;
-        }
+            query.userId = userId;
         }
 
         if (category) {
@@ -42,38 +37,45 @@ export default async function getListings(params: IListingsParams) {
 
         if (roomCount) {
         query.roomCount = {
-            gte: +roomCount,
+            gte: roomCount,
         };
         }
 
         if (guestCount) {
         query.guestCount = {
-            gte: +guestCount,
+            gte: guestCount,
         };
         }
 
         if (bathroomCount) {
         query.bathroomCount = {
-            gte: +bathroomCount,
+            gte: bathroomCount,
         };
         }
 
         if (locationValue) {
-        query.locationValue = locationValue;
+        query.locationValue = {
+            contains: locationValue,
+            mode: "insensitive",
+        };
         }
 
         if (startDate && endDate) {
         query.NOT = {
             reservations: {
             some: {
-                OR: [
-                {
-                    endDate: { gte: startDate },
-                    startDate: { lte: startDate },
-                },
+                AND: [
                 {
                     startDate: { lte: endDate },
                     endDate: { gte: endDate },
+                },
+                {
+                    startDate: { lte: startDate },
+                    endDate: { gte: startDate },
+                },
+                {
+                    startDate: { gte: startDate },
+                    endDate: { lte: endDate },
                 },
                 ],
             },
@@ -83,7 +85,9 @@ export default async function getListings(params: IListingsParams) {
 
         const listings = await prisma.listing.findMany({
         where: query,
-        orderBy: { createdAt: 'desc' },
+        orderBy: {
+            createdAt: "desc",
+        },
         });
 
         const safeListings = listings.map((listing) => ({

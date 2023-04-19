@@ -1,7 +1,8 @@
 import prisma from "@/app/libs/prismadb";
+import { Prisma } from "@prisma/client";
 
 export interface IListingsParams {
-    userId?: string;
+    userId: string;
     guestCount?: number;
     roomCount?: number;
     bathroomCount?: number;
@@ -24,16 +25,10 @@ export default async function getListings(params: IListingsParams) {
         category,
         } = params;
 
-        let query: any = {};
+        const query: Prisma.ListingWhereInput = {};
 
         if (userId) {
         query.userId = userId;
-        } else if (typeof window !== 'undefined') {
-        const searchParams = new URLSearchParams(window.location.search);
-        const userIdParam = searchParams.get('userId');
-        if (userIdParam) {
-            query.userId = userIdParam;
-        }
         }
 
         if (category) {
@@ -41,21 +36,15 @@ export default async function getListings(params: IListingsParams) {
         }
 
         if (roomCount) {
-        query.roomCount = {
-            gte: +roomCount,
-        };
+        query.roomCount = { gte: +roomCount };
         }
 
         if (guestCount) {
-        query.guestCount = {
-            gte: +guestCount,
-        };
+        query.guestCount = { gte: +guestCount };
         }
 
         if (bathroomCount) {
-        query.bathroomCount = {
-            gte: +bathroomCount,
-        };
+        query.bathroomCount = { gte: +bathroomCount };
         }
 
         if (locationValue) {
@@ -83,7 +72,7 @@ export default async function getListings(params: IListingsParams) {
 
         const listings = await prisma.listing.findMany({
         where: query,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" } as Prisma.SortOrder<Prisma.ListingOrderByInput>,
         });
 
         const safeListings = listings.map((listing) => ({
